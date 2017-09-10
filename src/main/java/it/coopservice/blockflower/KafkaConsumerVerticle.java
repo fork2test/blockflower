@@ -9,12 +9,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class MainVerticle extends AbstractVerticle {
+public class KafkaConsumerVerticle extends AbstractVerticle {
 
 
     public static void main(String[] args) {
         Vertx vertx = Vertx.vertx();
-        vertx.deployVerticle(new MainVerticle());
+        vertx.deployVerticle(new KafkaConsumerVerticle());
     }
 
 

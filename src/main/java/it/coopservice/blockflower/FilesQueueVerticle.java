@@ -5,6 +5,8 @@ import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.MongoClient;
 
+import java.time.Instant;
+
 public class FilesQueueVerticle extends AbstractVerticle {
 
     final String to_work = "csv/to_work/";
@@ -25,6 +27,25 @@ public class FilesQueueVerticle extends AbstractVerticle {
         vertx.eventBus().consumer("files", file -> {
             System.out.println("new msg arrived in queue 'files'");
             JsonObject jsonObject = (JsonObject) file.body();
+
+            // splitto il file in tanti piccoli json object da mandare in kafka
+            
+            JsonObject update = new JsonObject()
+                    .put("$set", new JsonObject()
+                            .put("parsing_date", Instant.now())
+                            .put("records", Long.valueOf(33)));
+            mongoClient.update("files", jsonObject, update, res -> {
+
+                if (res.succeeded()) {
+
+                    System.out.println("Book updated !");
+
+                } else {
+
+                    res.cause().printStackTrace();
+                }
+
+            });
         });
     }
 
