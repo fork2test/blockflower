@@ -1,0 +1,27 @@
+version: '2'
+services:
+  kafka:
+    image: spotify/kafka
+    ports:
+      - "9092:9092"
+      - "2181:2181"
+    environment:
+      ADVERTISED_HOST: 127.0.0.1
+      ADVERTISED_PORT: 9092
+  mongo:
+    image: mongo
+    ports:
+      - '27017:27017'
+    volumes:
+      - 'mongo:/data/db'
+  kafka-topics-ui:
+    image: landoop/kafka-topics-ui
+    ports:
+      - '8000:8000'
+    environment:
+      KAFKA_REST_PROXY_URL: http://127.0.0.1:9092
+    depends_on:
+      - kafka
+
+volumes:
+  mongo:
